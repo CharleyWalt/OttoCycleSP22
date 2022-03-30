@@ -5,9 +5,10 @@ import math
 # this code is modified from Professor Smay's Rankine_work file
 
 class otto():
-    def __init__(self, v1=8, T1=500, p1=100, p_ratio=8, T3=2500, name='Otto Cycle'):
+    def __init__(self, v1=0.0005, T1=300, p1=101325, p_ratio=8, T3=2000, name='Otto Cycle'):
         """
         Constructor for air-standard Otto cycle.
+
         """
         self.v1 = v1
         self.T1 = T1
