@@ -23,6 +23,9 @@ class ideal_air():
         self.pr = pr  # Relative Pressure
         self.u = u  # Internal Energy - kJ/kg
         self.vr = vr  # Specific Volume
+        self.p = 0
+        self.v = 0
+        self.s = 0
         self.name = name  # a useful identifier
         if T == None and h == None and pr == None and u == None and vr == None:
             return

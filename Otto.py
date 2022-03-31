@@ -6,7 +6,7 @@ from Gas import ideal_air
 # this code is modified from Professor Smay's Rankine_work file
 
 class otto():
-    def __init__(self, v1=0.0005, T1=300, p1=101325, p_ratio=8, T3=2000, name='Otto Cycle'):
+    def __init__(self, v1=0.0005, T1=300, p1=101325, c_ratio=8, T3=2000, name='Otto Cycle'):
         """
         Constructor for air-standard Otto cycle.
 
@@ -15,7 +15,7 @@ class otto():
         self.T1 = T1
         self.p1 = p1
         self.T3 = T3
-        self.p_ratio = p_ratio
+        self.c_ratio = c_ratio
         self.name = name
         self.efficiency = 0
         self.comp_work = 0
@@ -33,45 +33,61 @@ class otto():
         # calculate the 4 states
         # state 1: bottom-dead-center (BDC)
         self.state1 = ideal_air(T=self.T1, name='State 1')  # instantiate a gas object with conditions of state 1 using T1
+        self.state1.p = self.p1
+        self.state1.v = self.v1
         print("t1 =", self.state1.T)
         print("h1 =", self.state1.h)
         print("pr1 =", self.state1.pr)
         print("u1 =", self.state1.u)
         print("vr1 =", self.state1.vr)
+        print("v1 =", self.state1.v)
+        print("p1 =", self.state1.p)
 
         # state 2: top-dead-center (TDC), isentropically compressed from state 1
-        vr2 = self.state1.vr/self.p_ratio  # first calculate vr2 to from compression ratio relationship
+        vr2 = self.state1.vr/self.c_ratio  # first calculate vr2 to from compression ratio relationship
         self.state2 = ideal_air(vr=vr2, name='State 2')  # instantiate a gas object for state 2 using vr2
+        self.state2.p = self.p1*self.state2.pr/self.state1.pr
+        self.state2.v = self.v1/self.c_ratio
         print("t2 =", self.state2.T)
         print("h2 =", self.state2.h)
         print("pr2 =", self.state2.pr)
         print("u2 =", self.state2.u)
         print("vr2 =", self.state2.vr)
+        print("v2 =", self.state2.v)
+        print("p2 =", self.state2.p)
 
         # state 3: BDC, constant volume heat addition from state 2
         self.state3 = ideal_air(T=self.T3, name='State 3') # instantiate a gas object with for state 3 using T3
+        # self.state3.p =
+        self.state3.v = self.state2.v
         print("t3 =", self.state3.T)
         print("h3 =", self.state3.h)
         print("pr3 =", self.state3.pr)
         print("u3 =", self.state3.u)
         print("vr3 =", self.state3.vr)
+        print("v3 =", self.state3.v)
+        print("p3 =", self.state3.p)
 
         # state 4: TDC, isentropic expansion from state 3
-        vr4 = self.state3.vr * self.p_ratio  # calculate vr4 from compression ratio relationship
+        vr4 = self.state3.vr * self.c_ratio  # calculate vr4 from compression ratio relationship
         self.state4 = ideal_air(vr=vr4, name='State 4')
+        self.state4.p = self.state3.p * self.state4.pr / self.state3.pr
+        self.state4.v = self.state1.v
         print("t4 =", self.state4.T)
         print("h4 =", self.state4.h)
         print("pr4 =", self.state4.pr)
         print("u4 =", self.state4.u)
         print("vr4 =", self.state4.vr)
+        print("v4 =", self.state4.v)
+        print("p4 =", self.state4.p)
 
-        self.comp_work = self.state2.u - self.state1.u # calculate compression stroke work
-        self.power_work = self.state3.u - self.state4.u # calculate power stroke work
-        self.heat_added = self.state3.u - self.state2.u # calculate heat added
-        self.heat_rej = self.state3.u - self.state1.u  # calculate heat rejected
+        self.comp_work = self.state2.u - self.state1.u  # calculate compression stroke work
+        self.power_work = self.state3.u - self.state4.u  # calculate power stroke work
+        self.heat_added = self.state3.u - self.state2.u  # calculate heat added
+        self.heat_rej = self.state4.u - self.state1.u  # calculate heat rejected
         self.work_cycle = self.power_work - self.comp_work  # calculate work of the cycle
         self.heat_cycle = self.heat_added - self.heat_rej  # calculate net heat added
-        self.efficiency = self.work_cycle/self.heat_cycle * 100  # calculate cycle efficiency
+        self.efficiency = self.work_cycle/self.heat_added * 100  # calculate cycle efficiency
         return self.efficiency
 
 
@@ -171,7 +187,7 @@ def main():
     p1 = 1 * 101325  # pa converted from atm
     T3 = 3600 * 5/9  # deg K converted from deg R
 
-    otto1 = otto(v1=v1, T1=T1, p1=p1, p_ratio=8, T3=T3, name='Otto Cycle')  # instantiate an otto object to test it
+    otto1 = otto(v1=v1, T1=T1, p1=p1, c_ratio=8, T3=T3, name='Otto Cycle')  # instantiate an otto object to test it
     otto1.print_summary()
 
 if __name__=="__main__":
