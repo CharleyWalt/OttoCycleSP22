@@ -58,7 +58,7 @@ class otto():
 
         # state 3: BDC, constant volume heat addition from state 2
         self.state3 = ideal_air(T=self.T3, name='State 3') # instantiate a gas object with for state 3 using T3
-        # self.state3.p =
+        self.state3.p = self.state2.p*self.state3.T/self.state2.T
         self.state3.v = self.state2.v
         print("t3 =", self.state3.T)
         print("h3 =", self.state3.h)
