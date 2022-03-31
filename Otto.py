@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import math
+from Gas import ideal_air
 
 # this code is modified from Professor Smay's Rankine_work file
 
@@ -31,18 +32,38 @@ class otto():
     def calc_efficiency(self):
         # calculate the 4 states
         # state 1: bottom-dead-center (BDC)
-        self.state1 = gas(T=self.T1, name='State 1')  # instantiate a gas object with conditions of state 1 using T1
+        self.state1 = ideal_air(T=self.T1, name='State 1')  # instantiate a gas object with conditions of state 1 using T1
+        print("t1 =", self.state1.T)
+        print("h1 =", self.state1.h)
+        print("pr1 =", self.state1.pr)
+        print("u1 =", self.state1.u)
+        print("vr1 =", self.state1.vr)
 
         # state 2: top-dead-center (TDC), isentropically compressed from state 1
-        v_r2 = self.state1.v_r*self.p_ratio  # first calculate v_r2 to from compression ratio relationship
-        self.state2 = gas(v_r=v_r2, name='State 2')  # instantiate a gas object for state 2 using v_r2
+        vr2 = self.state1.vr/self.p_ratio  # first calculate vr2 to from compression ratio relationship
+        self.state2 = ideal_air(vr=vr2, name='State 2')  # instantiate a gas object for state 2 using vr2
+        print("t2 =", self.state2.T)
+        print("h2 =", self.state2.h)
+        print("pr2 =", self.state2.pr)
+        print("u2 =", self.state2.u)
+        print("vr2 =", self.state2.vr)
 
         # state 3: BDC, constant volume heat addition from state 2
-        self.state3 = gas(T=self.T3, name='State 3') # instantiate a gas object with for state 3 using T3
+        self.state3 = ideal_air(T=self.T3, name='State 3') # instantiate a gas object with for state 3 using T3
+        print("t3 =", self.state3.T)
+        print("h3 =", self.state3.h)
+        print("pr3 =", self.state3.pr)
+        print("u3 =", self.state3.u)
+        print("vr3 =", self.state3.vr)
 
         # state 4: TDC, isentropic expansion from state 3
-        v_r4 = self.state3.v_r * 1/self.p_ratio  # calculate v_r4 from compression ratio relationship
-        self.state4 = gas(v_r=v_r4, name='State 4')
+        vr4 = self.state3.vr * self.p_ratio  # calculate vr4 from compression ratio relationship
+        self.state4 = ideal_air(vr=vr4, name='State 4')
+        print("t4 =", self.state4.T)
+        print("h4 =", self.state4.h)
+        print("pr4 =", self.state4.pr)
+        print("u4 =", self.state4.u)
+        print("vr4 =", self.state4.vr)
 
         self.comp_work = self.state2.u - self.state1.u # calculate compression stroke work
         self.power_work = self.state3.u - self.state4.u # calculate power stroke work
